@@ -1,5 +1,21 @@
 \documentclass[CJK,utf8]{ctexrep}
 
+\usepackage{tabularx}
+\usepackage{listings}
+
+%加工描述语言
+\lstdefinestyle{proc}{
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\bfseries,
+	keepspaces=true,
+	showspaces=false,
+	language=[Visual]Basic,	%覆盖了绝大多数需要的关键字
+	%这里加额外需要的关键字
+	otherkeywords={SWITCH, GENERATE, BASED, TO},
+	%这里删除原有的关键字，虽然不应该有？
+	deletekeywords={}
+}
+
 % Title Page
 \title{
 	考试招生录取系统\\
@@ -58,5 +74,70 @@
 因此要求可靠性较高。对于各类关键数据，设置权限，保证不会被恶意修改。
 此外，各项功能差别较大，各模块所需要的操作各不相同，需要分别进行针对性的开发，
 才能更好地利用资源。
+
+\section*{需求规定}
+
+考试招生录取系统分为两大模块：\emph{报名模块}及\emph{招生模块}。
+其还需要一个保存\emph{考生档案}的\emph{数据库}。
+
+\subsection*{报名模块}
+
+在考生报名参加考试时，考生需要填写考生基本信息，并按批次填报志愿。
+
+在考试结束之后，招生办负责统计各考生的高考成绩，并将其录入报名系统。
+
+考生基本信息、志愿填报信息以及高考成绩均由招生系统保存至考生档案数据库。
+
+\subsection*{招生模块}
+
+招生分为三个步骤：审核、投档和录取。因此，招生模块分为如下三个子模块：
+
+\begin{enumerate}
+	\item 审核子模块
+	\item 投档子模块
+	\item 录取子模块
+\end{enumerate}
+
+\section*{系统设计}
+
+\subsection*{数据流图}
+
+\subsection*{数据字典}
+
+%
+% 表格示例：
+%
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	加工号 & 2.1 \\
+	\hline
+	简述 & 对招生信息进行审核 \\
+	\hline
+	输入 & 审核结果（？），招生信息 \\
+	\hline
+	输出 & 审核结果，招生信息 \\
+	\hline
+	加工逻辑 & E2.1 \\
+	\hline
+\end{tabularx}
+\subsubsection*{数据流条目}
+
+\subsubsection*{文件条目}
+
+\subsubsection*{数据项条目}
+
+\subsubsection*{加工条目}
+
+\subsubsection*{加工说明}
+
+% 示例加工说明伪代码。
+% 如果需要添加关键字可以在开头的\lstdefinestyle那里添加。
+Ea.b
+\begin{lstlisting}[style=proc]
+	GET 考生基本信息
+	WRITE TO 考生档案
+\end{lstlisting}
+
+\section*{结构设计图}
 
 \end{document}          
