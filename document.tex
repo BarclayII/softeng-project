@@ -1,0 +1,143 @@
+\documentclass[CJK,utf8]{ctexrep}
+
+\usepackage{tabularx}
+\usepackage{listings}
+
+%加工描述语言
+\lstdefinestyle{proc}{
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\bfseries,
+	keepspaces=true,
+	showspaces=false,
+	language=[Visual]Basic,	%覆盖了绝大多数需要的关键字
+	%这里加额外需要的关键字
+	otherkeywords={SWITCH, GENERATE, BASED, TO},
+	%这里删除原有的关键字，虽然不应该有？
+	deletekeywords={}
+}
+
+% Title Page
+\title{
+	考试招生录取系统\\
+	\large 需求分析与结构化设计文档
+}
+\author{
+	\begin{tabular}{ll}
+		12307130129 & 刘宇达 \\
+		11307120059 & 王家威 \\
+		12307130222 & 李砚业 \\
+		11307110008 & 甘全 \\
+	\end{tabular}
+}
+
+
+\begin{document}
+\maketitle
+
+\section*{引言}
+
+\subsection*{系统概述}
+考试招生录取系统通过信息化的方式涵盖了招生录取管理系统填报志愿、招生、投档等
+环节，提供了如下功能：
+\begin{enumerate}
+	\item 院校招生计划管理及发布
+	\item 成绩管理及发布
+	\item 志愿填报管理
+	\item 调档分数线的划定
+	\item 招生过程的维护，包括统招、调招、特招、退档、补录等
+	\item 录取名册及各个考生录取信息的发布
+\end{enumerate}
+
+%直接抄了。。
+系统流程以数据流图的方式展现，并辅以数据字典对数据流图中的所有名词加以解释。
+与此同时，数据字典中规定了所有数据流的组成项，每个数据项规定了相应的取值类型和范围，
+使系统不易出错、可靠性高；而加工图进一步描述了数据流的变化过程，简明易懂。
+最后，通过结构图展现了系统由哪些模块组成，以及模块之间的调用关系，
+使整套系统的构建更为清晰。
+
+\subsection*{文档概述}
+%继续抄。。
+本文档详细描述了考试招生录取系统的需求规约，为进一步设计及具体实现奠定了基础。
+%参考文献就不要了吧
+
+\section*{项目概述}
+
+\subsection*{目标}
+%其实就是变换了一下需求的用语。。
+将信息化应用于考试招生录取系统中，方便统一协调考生、招生办、院校之间的关系，提高
+办公效率。
+
+\subsection*{用户特点}
+本系统由于面向考生、招生办及院校，对考生将来人生规划及发展，以及院校生源的质量把关
+有重要影响，
+%继续堂而皇之地抄。。
+因此要求可靠性较高。对于各类关键数据，设置权限，保证不会被恶意修改。
+此外，各项功能差别较大，各模块所需要的操作各不相同，需要分别进行针对性的开发，
+才能更好地利用资源。
+
+\section*{需求规定}
+
+考试招生录取系统分为两大模块：\emph{报名模块}及\emph{招生模块}。
+其还需要一个保存\emph{考生档案}的\emph{数据库}。
+
+\subsection*{报名模块}
+
+在考生报名参加考试时，考生需要填写考生基本信息，并按批次填报志愿。
+
+在考试结束之后，招生办负责统计各考生的高考成绩，并将其录入报名系统。
+
+考生基本信息、志愿填报信息以及高考成绩均由招生系统保存至考生档案数据库。
+
+\subsection*{招生模块}
+
+招生分为三个步骤：审核、投档和录取。因此，招生模块分为如下三个子模块：
+
+\begin{enumerate}
+	\item 审核子模块
+	\item 投档子模块
+	\item 录取子模块
+\end{enumerate}
+
+\section*{系统设计}
+
+\subsection*{数据流图}
+
+\subsection*{数据字典}
+
+%
+% 表格示例：
+%
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	加工号 & 2.1 \\
+	\hline
+	简述 & 对招生信息进行审核 \\
+	\hline
+	输入 & 审核结果（？），招生信息 \\
+	\hline
+	输出 & 审核结果，招生信息 \\
+	\hline
+	加工逻辑 & E2.1 \\
+	\hline
+\end{tabularx}
+\subsubsection*{数据流条目}
+
+\subsubsection*{文件条目}
+
+\subsubsection*{数据项条目}
+
+\subsubsection*{加工条目}
+
+\subsubsection*{加工说明}
+
+% 示例加工说明伪代码。
+% 如果需要添加关键字可以在开头的\lstdefinestyle那里添加。
+Ea.b
+\begin{lstlisting}[style=proc]
+	GET 考生基本信息
+	WRITE TO 考生档案
+\end{lstlisting}
+
+\section*{结构设计图}
+
+\end{document}          
