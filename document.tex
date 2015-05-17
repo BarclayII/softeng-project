@@ -2,6 +2,8 @@
 
 \usepackage{tabularx}
 \usepackage{listings}
+\usepackage{multirow}
+\usepackage{amsmath}
 
 %加工描述语言
 \lstdefinestyle{proc}{
@@ -110,38 +112,308 @@
 	如果调档比例为100\%，则说明不扩大范围调档。在调档时如果最后几位分数相同，
 	如果不调它，又不足计划数，调它又超过计划数，系统自动保持其调档。
 	
-	投档子模块计算得到的各个学校计划招生数被传递到录取子模块中。
+	投档子模块计算得到的各个学校计划招生数与其余信息一起被传递到录取子模块中。
 	
 	\item 录取子模块
+	
+	录取子模块最为复杂，需要维护每个考生的状态（录取、退档、特招、补录），
+	进行统招、调招、特招、补录、退档等工作，并负责展示录取结果。
+	这些都需要各自的部件来完成。
 \end{enumerate}
 
 \section*{系统设计}
 
 \subsection*{数据流图}
 
+\begin{enumerate}
+	\item 顶层图
+	
+	\includegraphics[scale=0.75]{DataFlowDiagram/顶层图.png}
+	
+	\item 0层图
+	
+	\includegraphics[scale=0.5]{DataFlowDiagram/0层图.png}
+	
+	\item 加工2（招生模块）子图
+	
+	\includegraphics[scale=0.55]{DataFlowDiagram/加工2子图.png}
+	
+	\item 加工2.3（录取子模块）子图
+	
+	\includegraphics[scale=0.65]{DataFlowDiagram/加工2.3子图.png}
+\end{enumerate}
+
 \subsection*{数据字典}
 
 %
 % 表格示例：
 %
+
+\subsubsection*{数据项条目}
+
 \begin{tabularx}{0.85\textwidth}{|l|X|}
 	\hline
-	加工号 & 2.1 \\
+	名称 & 考生号 \\
 	\hline
-	简述 & 对招生信息进行审核 \\
+	简述 & 考生唯一识别号 \\
 	\hline
-	输入 & 审核结果（？），招生信息 \\
+	数据类型 & 11位数字字符串 \\
 	\hline
-	输出 & 审核结果，招生信息 \\
-	\hline
-	加工逻辑 & E2.1 \\
+	\multirow{4}{*}{备注}
+	& 1-2位：地区代码 \\
+	& 3-4位：城市代码 \\
+	& 5-7位：学校代码 \\
+	& 8-11位：唯一编号 \\
 	\hline
 \end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 姓名 \\
+	\hline
+	简述 & 考生姓名 \\
+	\hline
+	数据类型 & 字符串 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 毕业院校 \\
+	\hline
+	简述 & 考生毕业院校 \\
+	\hline
+	数据类型 & 字符串 \\
+	\hline
+	取值范围 & 省内高中 \\
+	\hline
+	备注 & 从下拉式菜单中选择 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 毕业年份 \\
+	\hline
+	简述 & 考生毕业年份 \\
+	\hline
+	数据类型 & 4位整型 \\
+	\hline
+	取值范围 & 2000...2999 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 通信地址 \\
+	\hline
+	简述 & 考生通信地址 \\
+	\hline
+	数据类型 & 字符串 \\
+	\hline
+	备注 & 用于录取通知书寄送 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 联系电话 \\
+	\hline
+	简述 & 考生联系电话 \\
+	\hline
+	数据类型 & 11位数字字符串 \\
+	\hline
+	备注 & 固定电话应包含区号 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 语文成绩 \\
+	\hline
+	简述 & 考生语文成绩 \\
+	\hline
+	数据类型 & 整型 \\
+	\hline
+	取值范围 & 0...150 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 数学成绩 \\
+	\hline
+	简述 & 考生数学成绩 \\
+	\hline
+	数据类型 & 整型 \\
+	\hline
+	取值范围 & 0...150 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 英语成绩 \\
+	\hline
+	简述 & 考生英语成绩 \\
+	\hline
+	数据类型 & 整型 \\
+	\hline
+	取值范围 & 0...150 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 综合科成绩 \\
+	\hline
+	简述 & 考生综合科成绩 \\
+	\hline
+	数据类型 & 整型 \\
+	\hline
+	取值范围 & 0...300 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 总成绩 \\
+	\hline
+	简述 & 考生总成绩 \\
+	\hline
+	数据类型 & 整型 \\
+	\hline
+	取值范围 & 0...750 \\
+	\hline
+	\multirow{2}{*}{备注} & $\text{总成绩}=\text{语文成绩}+\text{数学成绩}
+	+\text{英语成绩}+\text{综合科成绩}$ \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 排名 \\
+	\hline
+	简述 & 考生排名 \\
+	\hline
+	数据类型 & 整型 \\
+	\hline
+	取值范围 & $1\le \text{排名} \le \text{考生总人数}$\\
+	\hline
+	备注 & 根据排名规则产生 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 志愿院校专业 \\
+	\hline
+	简述 & 考生志愿院校专业 \\
+	\hline
+	数据类型 & 字符串 \\
+	\hline
+	取值范围 & 可填报院校和专业 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 录取状态 \\
+	\hline
+	简述 & 考生录取状态 \\
+	\hline
+	\multirow{2}{*}{数据类型} & 自定义结构：\\
+	& $\lbrace\text{已投档}\vert\text{已录取}\vert\text{未录取}
+	\rbrace+\text{志愿院校专业}$ \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 招生人数 \\
+	\hline
+	简述 & 志愿院校和专业的最大录取人数 \\
+	\hline
+	数据类型 & 正整型 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 招生要求 \\
+	\hline
+	简述 & 志愿院校和专业的招生要求 \\
+	\hline
+	数据类型 & 字符串 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 院校基本信息 \\
+	\hline
+	简述 & 志愿院校的基本信息 \\
+	\hline
+	数据类型 & 字符串 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 录取批次 \\
+	\hline
+	简述 & 志愿院校的录取批次\\
+	\hline
+	数据类型 & 字符串 \\
+	\hline
+	取值范围 & $\lbrace\text{提前批次}\vert\text{第一批次}\vert
+	\text{第二批次}\rbrace$ \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 退档理由 \\
+	\hline
+	简述 & 给考生的退档理由 \\
+	\hline
+	数据类型 & 字符串 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 特招说明 \\
+	\hline
+	简述 & 特招考生的说明 \\
+	\hline
+	数据类型 & 字符串 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 补招说明 \\
+	\hline
+	简述 & 补招考生的说明 \\
+	\hline
+	数据类型 & 字符串 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	名称 & 反馈信息 \\
+	\hline
+	简述 & 招生办对录取情况的反馈信息 \\
+	\hline
+	数据类型 & 字符串 \\
+	\hline
+\end{tabularx}
+
 \subsubsection*{数据流条目}
 
 \subsubsection*{文件条目}
-
-\subsubsection*{数据项条目}
 
 \subsubsection*{加工条目}
 
