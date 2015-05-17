@@ -5,19 +5,6 @@
 \usepackage{multirow}
 \usepackage{amsmath}
 
-%加工描述语言
-\lstdefinestyle{proc}{
-	basicstyle=\footnotesize\ttfamily,
-	keywordstyle=\bfseries,
-	keepspaces=true,
-	showspaces=false,
-	language=[Visual]Basic,	%覆盖了绝大多数需要的关键字
-	%这里加额外需要的关键字
-	otherkeywords={SWITCH, GENERATE, BASED, TO},
-	%这里删除原有的关键字，虽然不应该有？
-	deletekeywords={}
-}
-
 % Title Page
 \title{
 	考试招生录取系统\\
@@ -661,15 +648,196 @@
 
 \subsubsection*{加工条目}
 
-\subsubsection*{加工说明}
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	\textbf{名称} & \textbf{报名} \\
+	\hline
+	加工号 & 1 \\
+	\hline
+	简述 & 生成考生档案，准备投档 \\
+	\hline
+	输入 & 考生基本信息、志愿、高考成绩 \\
+	\hline
+	输出 & 考生档案 \\
+	\hline
+	\multirow{5}{*}{逻辑} & \ttfamily
+		Get 考生基本信息 \newline
+		Get 志愿 \newline
+		Get 高考成绩 \newline
+		Generate 考生档案 \newline
+		Write 考生档案 To 考生名册 \\
+	\hline
+\end{tabularx}
 
-% 示例加工说明伪代码。
-% 如果需要添加关键字可以在开头的\lstdefinestyle那里添加。
-Ea.b
-\begin{lstlisting}[style=proc]
-	GET 考生基本信息
-	WRITE TO 考生档案
-\end{lstlisting}
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	\textbf{名称} & \textbf{审核} \\
+	\hline
+	加工号 & 2.1 \\
+	\hline
+	简述 & 审核院校提交的招生信息 \\
+	\hline
+	输入 & 招生信息 \\
+	\hline
+	输出 & 招生信息（审核后） \\
+	\hline
+	\multirow{4}{*}{逻辑} & \ttfamily
+	Get 招生信息 \newline
+	审核招生信息 \newline
+	Generate 招生信息（审核后） \newline
+	Write 招生信息（审核后） To 招生信息（审核后） \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	\textbf{名称} & \textbf{投档} \\
+	\hline
+	加工号 & 2.2 \\
+	\hline
+	简述 & 系统根据招生信息和考生档案进行投档 \\
+	\hline
+	输入 & 招生信息（审核后）、考生档案 \\
+	\hline
+	输出 & （部分）考生档案 \\
+	\hline
+	\multirow{4}{*}{逻辑} & \ttfamily
+	Get 招生信息（审核后） \newline
+	Get 考生档案 \newline
+	根据考生排名将考生档案依次投出到学校 \newline
+	Modify 录取状态 To 已投档 In 考生档案 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	\textbf{名称} & \textbf{考生状态处理} \\
+	\hline
+	加工号 & 2.3.1 \\
+	\hline
+	简述 & 在考生档案中执行经过审核的录取结果，并输出 \\
+	\hline
+	\multirow{2}{*}{输入} & 录取名单（包括（统招、调招）录取名单、
+	特招名单、补招名单）、退档名单 \\
+	\hline
+	输出 & 处理反馈、录取情况、分数线、考生档案 \\
+	\hline
+	\multirow{10}{*}{逻辑} & \ttfamily
+	Get 录取名单 \newline
+	If 录取情况合法 \newline
+	\hspace*{0.6cm}Modify 录取状态 To 已录取 In 考生档案 \newline
+	Else \newline
+	\hspace*{0.6cm}Generate 处理反馈 \newline
+	End If \newline
+	Generate 分数线 \newline
+	Generate 录取情况 \newline
+	Get 退档案名单 \newline
+	Modify 录取状态 to 未录取 in 考生档案 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	\textbf{名称} & \textbf{统招、调招、退档} \\
+	\hline
+	加工号 & 2.3.2 \\
+	\hline
+	简述 & 学校进入系统进行统招、调招，并退档 \\
+	\hline
+	输入 & 招生信息（审核后）、录取名单、处理反馈 \\
+	\hline
+	输出 & 退档名单、录取名单 \\
+	\hline
+	\multirow{15}{*}{逻辑} & \ttfamily
+	Get 招生信息（审核后） \newline
+	Sort 考生档案 by 排名 \newline
+	For each 考生 in 考生档案 \newline
+	\hspace*{0.6cm}If 考生被录取 \newline
+	\hspace*{1.2cm}院校招办选择录取考生以及专业 \newline
+	\hspace*{1.2cm}Add 考生 in 录取名单 \newline
+	\hspace*{1.2cm}If 已录取学生数 > 招生人数 \newline
+	\hspace*{1.8cm}Alert 已超出招生人数 \newline
+	\hspace*{1.2cm}End if \newline
+	\hspace*{0.6cm}Else \newline
+	\hspace*{1.2cm}Add 考生 in 退档名单 \newline
+	\hspace*{0.6cm}End if \newline
+	End for \newline
+	Generate 录取名单 \newline
+	Generate 退档名单 \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	\textbf{名称} & \textbf{特招} \\
+	\hline
+	加工号 & 2.3.3 \\
+	\hline
+	简述 & 学校进入系统进行特招 \\
+	\hline
+	输入 & 特招名单、处理反馈 \\
+	\hline
+	输出 & 特招名单、处理反馈 \\
+	\hline
+	\multirow{10}{*}{逻辑} & \ttfamily
+	Get 特招名单 \newline
+	For each 特招 in 特招名单 \newline
+	\hspace*{0.6cm}If 特招说明合法 \newline
+	\hspace*{1.2cm}Commit 特招 \newline
+	\hspace*{0.6cm}Else \newline
+	\hspace*{1.2cm}Cancel 特招 \newline
+	\hspace*{1.2cm}Generate 处理反馈 \newline
+	\hspace*{0.6cm}End if \newline
+	End for \newline
+	Generate 特招名单\\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	\textbf{名称} & \textbf{补招} \\
+	\hline
+	加工号 & 2.3.4 \\
+	\hline
+	简述 & 学校进入系统进行补招 \\
+	\hline
+	输入 & 补招名单、处理反馈 \\
+	\hline
+	输出 & 补招名单、处理反馈 \\
+	\hline
+	\multirow{10}{*}{逻辑} & \ttfamily
+	Get 补招名单 \newline
+	For each 特招 in 补招名单 \newline
+	\hspace*{0.6cm}If 补招说明合法 \newline
+	\hspace*{1.2cm}Commit 补招 \newline
+	\hspace*{0.6cm}Else \newline
+	\hspace*{1.2cm}Cancel 补招 \newline
+	\hspace*{1.2cm}Generate 处理反馈 \newline
+	\hspace*{0.6cm}End if \newline
+	End for \newline
+	Generate 补招名单\\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	\textbf{名称} & \textbf{结果展示} \\
+	\hline
+	加工号 & 2.3.5 \\
+	\hline
+	简述 & 招生结果输出 \\
+	\hline
+	输入 & 录取情况 \\
+	\hline
+	输出 & 录取情况、分数线 \\
+	\hline
+	\multirow{4}{*}{逻辑} & \ttfamily
+	Get 录取情况 \newline
+	Generate 分数线 \newline
+	Output 录取情况 \newline
+	Output 分数线\\
+	\hline
+\end{tabularx}
 
 \section*{结构设计图}
 
