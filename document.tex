@@ -4,6 +4,7 @@
 \usepackage{listings}
 \usepackage{multirow}
 \usepackage{amsmath}
+\usepackage{lscape}
 
 % Title Page
 \title{
@@ -76,11 +77,15 @@
 以帮助其选择理想的院校。因此，报名模块需要从招生信息数据库中，
 读取考生需要查看院校的招生信息，并反馈给考生。
 
-随后，考生需要填写考生基本信息，以及其希望的志愿。报名模块收集这些信息，
+随后，考生需要填写考生基本信息，以及其希望的志愿。报名模块收集这些注册信息，
 在检查后存入考生档案数据库中。
 
 考试结束之后，招生办需要往各个考生的档案中录入其成绩，包括各科成绩以及总成绩。
 报名模块亦需要接收成绩信息，并依此更新考生档案数据库。
+
+本设计中，报名模块被分为四个子模块。其中，填报志愿、注册、成绩录入子模块负责
+上述三项工作。其产生的信息由档案生成子模块收集、汇总，并最终输入至考生档案
+数据库中。
 
 \subsection*{招生模块}
 
@@ -120,6 +125,10 @@
 	\item 0层图
 	
 	\includegraphics[scale=0.5]{DataFlowDiagram/0层图.png}
+	
+	\item 加工1（报名模块）子图
+	
+	\includegraphics[scale=0.5]{DataFlowDiagram/加工1子图.png}
 	
 	\item 加工2（招生模块）子图
 	
@@ -839,6 +848,46 @@
 	\hline
 \end{tabularx}
 
-\section*{结构设计图}
+\begin{landscape}
+	\section*{结构设计图}
+	
+	\subsection*{加工前结构设计图}
+	
+	\includegraphics[scale=0.25]
+	{StructureDesign/加工前结构设计图.png}
+	
+	\subsection*{加工后结构设计图}
+	
+	\includegraphics[scale=0.30]
+	{StructureDesign/加工后结构设计图.png}
+\end{landscape}
 
-\end{document}          
+\subsection*{模块说明}
+\begin{enumerate}
+	\item 报名处理：变换型程序结构，
+	将由考生输入的考生基本信息及志愿与招生办得到的成绩信息
+	整合成为考生档案，储存到考生名册数据库中，其中，
+	考生志愿的填写同时用到了招生信息。
+	\item 招生处理：经过加工后，拥有四个功能：
+	\begin{enumerate}
+		\item 审核：由学校输入的招生信息经过招生办审核后生成招生信息（审核后），
+		储存到招生信息数据库。
+		\item 投档：根据考生名册和招生信息（审核后）内信息，
+		根据学校录取批次批次及学生志愿信息将部分考生档案送往学校。
+		同时将招生计划传递给考生状态处理。
+		\item 考生状态处理：根据得到的不同招生方式得到的名单对考生档案进行修改
+		并保存在考生名册数据库中，同时将修改成功或失败的结果反馈给相关模块。
+		同时，返还录取情况及分数线。
+		\begin{enumerate}
+			\item 统招、调招、退档：提供按成绩排序功能及学校方可操作的页面，
+			根据输入的录取名单及类型返还给考生状态处理模块
+			（未被选择项即为退档）。
+			同时可以根据计划招生数信息来提示用户当前是否已经满额。
+			\item 特招：提供学校方用户可操作页面将特招名单的传递给数据库。
+			\item 补招：同上。
+		\end{enumerate}
+		\item 结果展示：根据得到的分数线和录取情况将结果进行展示。
+	\end{enumerate}
+\end{enumerate}
+
+\end{document}
