@@ -659,9 +659,74 @@
 
 \begin{tabularx}{0.85\textwidth}{|l|X|}
 	\hline
-	\textbf{名称} & \textbf{报名} \\
+	\textbf{名称} & \textbf{注册} \\
 	\hline
-	加工号 & 1 \\
+	加工号 & 1.1 \\
+	\hline
+	简述 & 考生登录系统注册，输入考生基本信息 \\
+	\hline
+	输入 & 考生基本信息 \\
+	\hline
+	输出 & 考生基本信息 \\
+	\hline
+	\multirow{7}{*}{逻辑} & \ttfamily
+		Get 考生基本信息（无考生号）
+		If 考生基本信息 is legal \newline
+		Generate 考生号 \newline
+		Else \newline
+		Alert 输入信息非法 \newline
+		End if \newline
+		Generate 考生基本信息（完整） \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	\textbf{名称} & \textbf{填报志愿} \\
+	\hline
+	加工号 & 1.2 \\
+	\hline
+	简述 & 考生根据招生信息填报志愿 \\
+	\hline
+	输入 & 招生信息（审核后）、志愿 \\
+	\hline
+	输出 & 志愿 \\
+	\hline
+	\multirow{6}{*}{逻辑} & \ttfamily
+	Get 招生信息（审核后） \newline
+	Display 招生信息（审核后） \newline
+	Get 志愿 \newline
+	If 志愿 is legal \newline
+	Generate 志愿 \newline
+	End if \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	\textbf{名称} & \textbf{成绩读入} \\
+	\hline
+	加工号 & 1.3 \\
+	\hline
+	简述 & 从招生办系统中读入高考成绩 \\
+	\hline
+	输入 & 高考成绩 \\
+	\hline
+	输出 & 高考成绩 \\
+	\hline
+	\multirow{4}{*}{逻辑} & \ttfamily
+	Get 高考成绩 \newline
+	If 高考成绩 is legal \newline
+	Generate 高考成绩 \newline
+	End if \\
+	\hline
+\end{tabularx}
+
+\begin{tabularx}{0.85\textwidth}{|l|X|}
+	\hline
+	\textbf{名称} & \textbf{档案生成} \\
+	\hline
+	加工号 & 1.4 \\
 	\hline
 	简述 & 生成考生档案，准备投档 \\
 	\hline
@@ -670,11 +735,11 @@
 	输出 & 考生档案 \\
 	\hline
 	\multirow{5}{*}{逻辑} & \ttfamily
-		Get 考生基本信息 \newline
-		Get 志愿 \newline
-		Get 高考成绩 \newline
-		Generate 考生档案 \newline
-		Write 考生档案 To 考生名册 \\
+	Get 考生基本信息 \newline
+	Get 志愿 \newline
+	Get 高考成绩 \newline
+	Generate 考生档案 \newline
+	Write 考生档案 to 考生名册 \\
 	\hline
 \end{tabularx}
 
